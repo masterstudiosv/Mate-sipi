@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemática</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="cal.js" defer></script>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1> Calculadora Matemática Avanzada</h1>
+            <p>Suite completa para Geometría Analítica, Cónicas y Trigonometría</p>
+        </div>
+
+        <div class="tabs"> 
+            <center>
+            <button class="tab-btn active" onclick="openTab(event, 'parabola')"> Parábola</button>
+            <button class="tab-btn" onclick="openTab(event, 'ellipse')"> Elipse</button>
+            <button class="tab-btn" onclick="openTab(event, 'hyperbola')"> Hipérbola</button>
+            <button class="tab-btn" onclick="openTab(event, 'distance')"> Distancia</button>
+            <button class="tab-btn" onclick="openTab(event, 'triangle')"> Triángulos</button>
+            <button class="tab-btn" onclick="openTab(event, 'vectors')"> Vectores</button>
+            <button class="tab-btn" onclick="openTab(event, 'intersection')"> Intersección</button>
+            <button class="tab-btn" onclick="openTab(event, 'test')"> Desafío</button>
+            <button class="tab-btn" onclick="openTab(event, 'material')"> Material de Apoyo</button>
+            <button class="tab-btn logout-btn" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </center>
+        </div>
+
+        <!-- PARÁBOLA -->
+        <div id="parabola" class="tab-content active">
+            <div class="card">
+                <h2>📐 Calculadora de Parábola</h2>
+                <div class="formula-display">
+                    Fórmula: \( y = \frac{1}{4p} x^2 \) (vértice en origen)
+                </div>
+                <form onsubmit="event.preventDefault(); calculateParabola();">
+                    <div class="form-group">
+                        <label class="form-label">Valor de p (p > 0):</label>
+                        <input type="number" class="form-input" id="p_par" required step="0.01" min="0.01" placeholder="Ej: 2">
+                    </div>
+                    <button type="submit" class="btn btn-primary">✨ Calcular</button>
+                </form>
+                <div id="parabolaResult"></div>
+                <canvas id="parabolaCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- ELIPSE -->
+        <div id="ellipse" class="tab-content">
+            <div class="card">
+                <h2>⭕ Calculadora de Elipse</h2>
+                <div class="formula-display">
+                    \(\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1\)
+                </div>
+                <form onsubmit="event.preventDefault(); calculateEllipse();">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Valor de a:</label>
+                            <input type="number" class="form-input" id="a_ell" required step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Valor de b:</label>
+                            <input type="number" class="form-input" id="b_ell" required step="0.01">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"> Calcular</button>
+                </form>
+                <div id="ellipseResult"></div>
+                <canvas id="ellipseCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- HIPÉRBOLA -->
+        <div id="hyperbola" class="tab-content">
+            <div class="card">
+                <h2>⏳ Calculadora de Hipérbola</h2>
+                <div class="formula-display">
+                    \(\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1\)
+                </div>
+                <form onsubmit="event.preventDefault(); calculateHyperbola();">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Valor de a:</label>
+                            <input type="number" class="form-input" id="a_hyp" required step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Valor de b:</label>
+                            <input type="number" class="form-input" id="b_hyp" required step="0.01">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"> Calcular</button>
+                </form>
+                <div id="hyperbolaResult"></div>
+                <canvas id="hyperbolaCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- DISTANCIA -->
+        <div id="distance" class="tab-content">
+            <div class="card">
+                <h2>📏 Calculadora de Distancia, Pendiente y Punto Medio</h2>
+                <form onsubmit="event.preventDefault(); calculateDistance();">
+                    <div class="grid-2">
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">Punto 1</h3>
+                            <div class="form-group">
+                                <label class="form-label">x₁:</label>
+                                <input type="number" class="form-input" id="x1" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">y₁:</label>
+                                <input type="number" class="form-input" id="y1" required step="0.01">
+                            </div>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--secondary); margin-bottom: 1rem;">Punto 2</h3>
+                            <div class="form-group">
+                                <label class="form-label">x₂:</label>
+                                <input type="number" class="form-input" id="x2" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">y₂:</label>
+                                <input type="number" class="form-input" id="y2" required step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"> Calcular</button>
+                </form>
+                <div id="distanceResult"></div>
+                <canvas id="distanceCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- TRIÁNGULOS -->
+        <div id="triangle" class="tab-content">
+            <div class="card">
+                <h2>🧭 Calculadora de Triángulos Rectángulos</h2>
+                <form onsubmit="event.preventDefault(); calculateTriangle();">
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label class="form-label">Cateto a:</label>
+                            <input type="number" class="form-input" id="cateto_a" step="0.01" placeholder="Opcional">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cateto b:</label>
+                            <input type="number" class="form-input" id="cateto_b" step="0.01" placeholder="Opcional">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hipotenusa:</label>
+                            <input type="number" class="form-input" id="hipotenusa" step="0.01" placeholder="Opcional">
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;">💡 Ingresa al menos 2 valores</p>
+                    <button type="submit" class="btn btn-primary"> Calcular</button>
+                </form>
+                <div id="triangleResult"></div>
+            </div>
+        </div>
+
+        <!-- VECTORES -->
+        <div id="vectors" class="tab-content">
+            <div class="card">
+                <h2>🧩 Calculadora Vectorial</h2>
+                <form onsubmit="event.preventDefault(); calculateVectors();">
+                    <div class="grid-2">
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">Vector A</h3>
+                            <div class="form-group">
+                                <label class="form-label">Componente i:</label>
+                                <input type="number" class="form-input" id="va_i" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Componente j:</label>
+                                <input type="number" class="form-input" id="va_j" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Componente k:</label>
+                                <input type="number" class="form-input" id="va_k" value="0" step="0.01">
+                            </div>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--secondary); margin-bottom: 1rem;">Vector B</h3>
+                            <div class="form-group">
+                                <label class="form-label">Componente i:</label>
+                                <input type="number" class="form-input" id="vb_i" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Componente j:</label>
+                                <input type="number" class="form-input" id="vb_j" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Componente k:</label>
+                                <input type="number" class="form-input" id="vb_k" value="0" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"> Calcular</button>
+                </form>
+                <div id="vectorsResult"></div>
+            </div>
+        </div>
+
+        <!-- INTERSECCIÓN -->
+        <div id="intersection" class="tab-content">
+            <div class="card">
+                <h2>🌐 Calculadora de Intersecciones</h2>
+                <div class="form-group">
+                    <label class="form-label">Tipo de cónica:</label>
+                    <select id="intConicType" class="form-select">
+                        <option value="parabola">Parábola: y = ax²</option>
+                        <option value="circle">Círculo: x² + y² = r²</option>
+                    </select>
+                </div>
+                <form onsubmit="event.preventDefault(); calculateIntersection();">
+                    <div class="grid-2">
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">Recta: y = mx + b</h3>
+                            <div class="form-group">
+                                <label class="form-label">Pendiente (m):</label>
+                                <input type="number" class="form-input" id="int_m" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ordenada (b):</label>
+                                <input type="number" class="form-input" id="int_b" required step="0.01">
+                            </div>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--secondary); margin-bottom: 1rem;">Parámetro</h3>
+                            <div class="form-group">
+                                <label class="form-label" id="intParamLabel">Parámetro a:</label>
+                                <input type="number" class="form-input" id="int_param" required step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"> Calcular</button>
+                </form>
+                <div id="intersectionResult"></div>
+                <canvas id="intersectionCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- MATERIAL DE APOYO -->
+        <div id="material" class="tab-content">
+            <div class="card">
+                <h2>📚 Material de Apoyo</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Videos tutoriales y ejercicios resueltos paso a paso</p>
+
+                <!-- Videos de YouTube -->
+                <h3 style="color: var(--primary); margin: 2rem 0 1rem;">🎥 Videos Tutoriales</h3>
+                
+                <div style="margin-bottom: 3rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;"> Parábola - Conceptos Básicos</h4>
+                    <div class="video-container">
+                       <iframe width="560" height="315" src="https://www.youtube.com/embed/FlsYCYbmJGU?si=vV-kDOZFc50EqjJa" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 3rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;"> Elipse - Ecuación y Elementos</h4>
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/P-PhOy9F7Sg?si=g-qN_ttnYuW1Iyow" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 3rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;"> Hipérbola - Propiedades</h4>
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/-I3Ld9a9ekk?si=SukoB-D2inqmqWT-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <!-- Ejercicios Resueltos -->
+                <h3 style="color: var(--success); margin: 3rem 0 1rem;">✏️ Ejercicios Resueltos Paso a Paso</h3>
+
+                <!-- Ejercicio 1: Parábola -->
+                <div class="exercise-box">
+                    <h3>📐 Ejercicio 1: Encontrar los elementos de una parábola</h3>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;"><strong>Problema:</strong> Dada la parábola con p = 3, encuentra el foco, directriz y longitud del latus rectum.</p>
+                    
+                    <div class="step">
+                        <h4>Paso 1: Identificar los datos</h4>
+                        <p style="color: var(--text-secondary);">
+                            Tenemos p = 3<br>
+                            La ecuación general es: \( y = \frac{1}{4p}x^2 \)
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 2: Calcular la ecuación de la parábola</h4>
+                        <p style="color: var(--text-secondary);">
+                            \( y = \frac{1}{4(3)}x^2 = \frac{1}{12}x^2 \)
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 3: Encontrar el foco</h4>
+                        <p style="color: var(--text-secondary);">
+                            El foco está en (0, p) = <strong>(0, 3)</strong>
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 4: Encontrar la directriz</h4>
+                        <p style="color: var(--text-secondary);">
+                            La directriz es la recta y = -p<br>
+                            Directriz: <strong>y = -3</strong>
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 5: Calcular longitud del latus rectum</h4>
+                        <p style="color: var(--text-secondary);">
+                            Longitud = 4p = 4(3) = <strong>12 unidades</strong>
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong style="color: var(--success);">✅ Respuesta Final:</strong><br>
+                        <span style="color: var(--text-secondary);">
+                            • Foco: (0, 3)<br>
+                            • Directriz: y = -3<br>
+                            • Longitud latus rectum: 12 unidades
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Ejercicio 2: Elipse -->
+                <div class="exercise-box">
+                    <h3>⭕ Ejercicio 2: Determinar elementos de una elipse</h3>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;"><strong>Problema:</strong> Para la elipse \(\frac{x^2}{25} + \frac{y^2}{16} = 1\), encuentra los vértices, focos y excentricidad.</p>
+                    
+                    <div class="step">
+                        <h4>Paso 1: Identificar a² y b²</h4>
+                        <p style="color: var(--text-secondary);">
+                            Comparando con \(\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1\):<br>
+                            a² = 25 → a = 5<br>
+                            b² = 16 → b = 4
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 2: Determinar la orientación</h4>
+                        <p style="color: var(--text-secondary);">
+                            Como a > b, el eje mayor es horizontal
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 3: Calcular c (distancia focal)</h4>
+                        <p style="color: var(--text-secondary);">
+                            \( c = \sqrt{a^2 - b^2} = \sqrt{25 - 16} = \sqrt{9} = 3 \)
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 4: Encontrar vértices</h4>
+                        <p style="color: var(--text-secondary);">
+                            Vértices principales (sobre eje mayor): <strong>(±5, 0)</strong><br>
+                            Vértices menores (sobre eje menor): <strong>(0, ±4)</strong>
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 5: Encontrar focos</h4>
+                        <p style="color: var(--text-secondary);">
+                            Focos: <strong>(±3, 0)</strong>
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 6: Calcular excentricidad</h4>
+                        <p style="color: var(--text-secondary);">
+                            \( e = \frac{c}{a} = \frac{3}{5} = 0.6 \)
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong style="color: var(--success);">✅ Respuesta Final:</strong><br>
+                        <span style="color: var(--text-secondary);">
+                            • Vértices: (±5, 0) y (0, ±4)<br>
+                            • Focos: (±3, 0)<br>
+                            • Excentricidad: e = 0.6
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Ejercicio 3: Distancia entre puntos -->
+                <div class="exercise-box">
+                    <h3>📏 Ejercicio 3: Distancia, pendiente y punto medio</h3>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;"><strong>Problema:</strong> Dados los puntos A(2, 3) y B(6, 7), calcula la distancia, pendiente y punto medio.</p>
+                    
+                    <div class="step">
+                        <h4>Paso 1: Aplicar fórmula de distancia</h4>
+                        <p style="color: var(--text-secondary);">
+                            \( d = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2} \)<br>
+                            \( d = \sqrt{(6-2)^2 + (7-3)^2} \)<br>
+                            \( d = \sqrt{4^2 + 4^2} = \sqrt{16 + 16} = \sqrt{32} \)<br>
+                            \( d = 4\sqrt{2} \approx 5.657 \) unidades
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 2: Calcular la pendiente</h4>
+                        <p style="color: var(--text-secondary);">
+                            \( m = \frac{y_2-y_1}{x_2-x_1} = \frac{7-3}{6-2} = \frac{4}{4} = 1 \)
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 3: Encontrar el punto medio</h4>
+                        <p style="color: var(--text-secondary);">
+                            \( M = \left(\frac{x_1+x_2}{2}, \frac{y_1+y_2}{2}\right) \)<br>
+                            \( M = \left(\frac{2+6}{2}, \frac{3+7}{2}\right) = (4, 5) \)
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 4: Calcular el ángulo de inclinación</h4>
+                        <p style="color: var(--text-secondary);">
+                            \( \theta = \arctan(m) = \arctan(1) = 45° \)
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong style="color: var(--success);">✅ Respuesta Final:</strong><br>
+                        <span style="color: var(--text-secondary);">
+                            • Distancia: 5.657 unidades<br>
+                            • Pendiente: m = 1<br>
+                            • Punto medio: (4, 5)<br>
+                            • Ángulo: 45°
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Ejercicio 4: Vectores -->
+                <div class="exercise-box">
+                    <h3>🧩 Ejercicio 4: Operaciones con vectores</h3>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;"><strong>Problema:</strong> Dados los vectores A = (3, 4) y B = (1, 2), calcula A + B, A · B y el ángulo entre ellos.</p>
+                    
+                    <div class="step">
+                        <h4>Paso 1: Suma de vectores</h4>
+                        <p style="color: var(--text-secondary);">
+                            A + B = (3 + 1, 4 + 2) = <strong>(4, 6)</strong>
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 2: Producto punto</h4>
+                        <p style="color: var(--text-secondary);">
+                            A · B = (3)(1) + (4)(2) = 3 + 8 = <strong>11</strong>
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 3: Magnitudes de los vectores</h4>
+                        <p style="color: var(--text-secondary);">
+                            |A| = √(3² + 4²) = √(9 + 16) = √25 = 5<br>
+                            |B| = √(1² + 2²) = √(1 + 4) = √5 ≈ 2.236
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <h4>Paso 4: Ángulo entre vectores</h4>
+                        <p style="color: var(--text-secondary);">
+                            \( \cos\theta = \frac{A \cdot B}{|A||B|} = \frac{11}{5\sqrt{5}} = \frac{11}{11.18} \approx 0.984 \)<br>
+                            \( \theta = \arccos(0.984) \approx 10.3° \)
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong style="color: var(--success);">✅ Respuesta Final:</strong><br>
+                        <span style="color: var(--text-secondary);">
+                            • A + B = (4, 6)<br>
+                            • A · B = 11<br>
+                            • Ángulo entre vectores: 10.3°
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Recursos adicionales -->
+                <div style="background: rgba(99, 102, 241, 0.1); border: 2px solid var(--primary); border-radius: 15px; padding: 2rem; margin-top: 3rem;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">💡 Consejos de Estudio</h3>
+                    <ul style="color: var(--text-secondary); line-height: 2;">
+                        <li>✓ Practica dibujando las cónicas para visualizar mejor sus propiedades</li>
+                        <li>✓ Memoriza las fórmulas fundamentales de cada sección geométrica</li>
+                        <li>✓ Verifica tus resultados usando la calculadora antes de entregar</li>
+                        <li>✓ Comprende el significado geométrico de cada elemento (foco, directriz, etc.)</li>
+                        <li>✓ Resuelve al menos 5 ejercicios de cada tipo antes del examen</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODO DESAFÍO -->
+        <div id="test" class="tab-content">
+            <div class="card">
+                <h2>🎯 Modo Desafío Analítico</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">¡Pon a prueba tus conocimientos! Responde rápido para ganar más puntos</p>
+
+                <div id="testSetup">
+                    <div class="form-group">
+                        <label class="form-label">Tu nombre:</label>
+                        <input type="text" class="form-input" id="userName" placeholder="Ingresa tu nombre">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dificultad:</label>
+                        <select id="difficulty" class="form-select">
+                            <option value="easy">🟢 Fácil (40 seg por pregunta)</option>
+                            <option value="medium">🟡 Media (30 seg por pregunta)</option>
+                            <option value="hard">🔴 Difícil (20 seg por pregunta)</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-success" onclick="startTest()">🎯 Iniciar Desafío</button>
+                        <button class="btn btn-warning" onclick="viewRanking()">🏆 Ver Ranking</button>
+                    </div>
+                </div>
+
+                <div id="testArea" style="display:none;">
+                    <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)); border-radius: 15px; padding: 2rem; margin-bottom: 2rem;">
+                        <p id="question" style="font-size: 1.3rem; font-weight: 600; margin: 0;"></p>
+                    </div>
+                    
+                    <div class="grid-3">
+                        <div class="stat-item">
+                            <div class="stat-label">⏱️ Tiempo</div>
+                            <div class="stat-value" id="timer">30</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">⭐ Puntos</div>
+                            <div class="stat-value" id="score">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">✅ Correctas</div>
+                            <div class="stat-value" id="correct">0</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 2rem;">
+                        <input type="text" class="form-input" id="answer" placeholder="Escribe tu respuesta..." style="font-size: 1.2rem;">
+                    </div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="submitAnswer()">📤 Enviar</button>
+                        <button class="btn btn-warning" onclick="skipQuestion()">⏭️ Saltar (-5 pts)</button>
+                        <button class="btn" style="background: #ef4444; color: white;" onclick="endTest()">🛑 Terminar</button>
+                    </div>
+                </div>
+
+                <div id="rankingList"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p class="footer-title">Calculadora Matemática Avanzada</p>
+            <p>Desarrollado por: <strong>Grupo 1</strong> | Sección 2-13 | Profesor: Carlos Rosario</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">© 2025 - Humboldt Profesional de Herramientas Matemáticas</p>
+        </div>
+    </div>
+</body>
+</html>

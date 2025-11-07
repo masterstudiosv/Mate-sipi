@@ -776,3 +776,218 @@
                 displayMath: [['\\[', '\\]']]
             }
         };
+
+        // ========================================
+// SISTEMA DE TIMEOUT DE SESIÓN
+// Auto-logout después de 30 minutos de inactividad
+// ========================================
+
+(function() {
+    'use strict';
+
+    // Configuración
+    const INACTIVITY_TIME = 30 * 60 * 1000; // 30 minutos en milisegundos
+    const WARNING_TIME = 28 * 60 * 1000;     // Advertencia a los 28 minutos
+    const LOGIN_PAGE = 'index.html';
+
+    let inactivityTimer;
+    let warningTimer;
+    let warningShown = false;
+
+    // Verificar si el usuario está autenticado
+    function checkAuth() {
+        const userEmail = sessionStorage.getItem('userEmail');
+        const loginTime = sessionStorage.getItem('loginTime');
+
+        if (!userEmail || !loginTime) {
+            // No hay sesión activa, redirigir al login
+            redirectToLogin();
+            return false;
+        }
+        return true;
+    }
+
+    // Función para redirigir al login
+    function redirectToLogin() {
+        sessionStorage.clear();
+        window.location.href = LOGIN_PAGE;
+    }
+
+    // Función para mostrar advertencia
+    function showWarning() {
+        if (warningShown) return;
+        warningShown = true;
+
+        const warningDiv = document.createElement('div');
+        warningDiv.id = 'inactivity-warning';
+        warningDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(245, 158, 11, 0.4);
+            z-index: 10000;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            max-width: 400px;
+            animation: slideInRight 0.5s ease-out;
+        `;
+        warningDiv.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="font-size: 2rem;">⚠️</span>
+                <div>
+                    <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">Sesión Inactiva</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Serás desconectado en 2 minutos por inactividad</div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(warningDiv);
+
+        // Agregar animación CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Auto-ocultar después de 5 segundos
+        setTimeout(() => {
+            if (warningDiv.parentNode) {
+                warningDiv.style.animation = 'slideInRight 0.5s ease-out reverse';
+                setTimeout(() => warningDiv.remove(), 500);
+            }
+        }, 5000);
+    }
+
+    // Reiniciar el temporizador de inactividad
+    function resetInactivityTimer() {
+        // Limpiar temporizadores existentes
+        clearTimeout(inactivityTimer);
+        clearTimeout(warningTimer);
+        
+        // Remover advertencia si existe
+        const existingWarning = document.getElementById('inactivity-warning');
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+        warningShown = false;
+
+        // Configurar advertencia (2 minutos antes del logout)
+        warningTimer = setTimeout(() => {
+            showWarning();
+        }, WARNING_TIME);
+
+        // Configurar logout automático (30 minutos)
+        inactivityTimer = setTimeout(() => {
+            console.log('⏰ Sesión expirada por inactividad');
+            
+            // Mostrar mensaje final
+            const finalMsg = document.createElement('div');
+            finalMsg.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(15, 23, 42, 0.98);
+                color: white;
+                padding: 3rem;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                z-index: 10001;
+                text-align: center;
+                font-family: 'Poppins', sans-serif;
+                border: 2px solid #6366f1;
+            `;
+            finalMsg.innerHTML = `
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🔒</div>
+                <div style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;">Sesión Expirada</div>
+                <div style="font-size: 1.1rem; color: #cbd5e1;">Tu sesión ha caducado por inactividad</div>
+                <div style="margin-top: 1.5rem; font-size: 0.9rem; color: #94a3b8;">Redirigiendo al inicio de sesión...</div>
+            `;
+            document.body.appendChild(finalMsg);
+
+            // Redirigir después de 2 segundos
+            setTimeout(() => {
+                redirectToLogin();
+            }, 2000);
+        }, INACTIVITY_TIME);
+    }
+
+    // Eventos que indican actividad del usuario
+    const activityEvents = [
+        'mousedown',
+        'mousemove',
+        'keypress',
+        'scroll',
+        'touchstart',
+        'click'
+    ];
+
+    // Función de inicialización
+    function initSessionTimeout() {
+        // Verificar autenticación al cargar
+        if (!checkAuth()) {
+            return;
+        }
+
+        console.log('✅ Sistema de timeout de sesión activado (30 minutos)');
+
+        // Agregar listeners para detectar actividad
+        activityEvents.forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+
+        // Iniciar el temporizador
+        resetInactivityTimer();
+
+        // Verificar periódicamente si la sesión sigue válida
+        setInterval(() => {
+            if (!sessionStorage.getItem('userEmail')) {
+                redirectToLogin();
+            }
+        }, 60000); // Cada minuto
+    }
+
+    // Inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSessionTimeout);
+    } else {
+        initSessionTimeout();
+    }
+
+    // Limpiar al cerrar la página
+    window.addEventListener('beforeunload', () => {
+        clearTimeout(inactivityTimer);
+        clearTimeout(warningTimer);
+    });
+
+})();
+
+// ========================================
+// OPCIONAL: Función para cerrar sesión manualmente
+// ========================================
+function logout() {
+    sessionStorage.clear();
+    window.location.href = 'index.html';
+}
+
+// Hacer la función disponible globalmente
+window.logout = logout;
+
+function cerrarSesion() {
+        // Aquí podrías agregar lógica adicional si usas sesiones (por ejemplo, limpiar localStorage)
+        window.location.href = "index.html"; // Redirige al index.html
+    }
