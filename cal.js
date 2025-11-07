@@ -644,7 +644,7 @@
             document.getElementById('answer').focus();
             
             const difficulty = document.getElementById('difficulty').value;
-            const timeMap = { easy: 40, medium: 30, hard: 20 };
+            const timeMap = { easy: 60, medium: 45, hard: 30 };
             timeLeft = timeMap[difficulty];
             document.getElementById('timer').textContent = timeLeft;
             
@@ -990,4 +990,5 @@ window.logout = logout;
 function cerrarSesion() {
         // Aquí podrías agregar lógica adicional si usas sesiones (por ejemplo, limpiar localStorage)
         window.location.href = "index.html"; // Redirige al index.html
+
     }
