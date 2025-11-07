@@ -1,10 +1,12 @@
 {
-  "name": "Dogui Σ Pro",
-  "short_name": "Dogui Σ Pro",
+  "name": "Dogui Sigma",
+  "short_name": "DoguiSigma",
+  "description": "Una calculadora matemática avanzada con diseño limpio, rápida y precisa.",
+  "id": "dogui-sigma",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#0f1724",
+  "theme_color": "#0f1724",
   "icons": [
     {
       "src": "/icon-192.png",
